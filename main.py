@@ -1,3 +1,9 @@
+import sys
+
+command = sys.argv[1]
+country = sys.argv[2]
+year = sys.argv[-1]
+
 with open('olympic athletes.tsv', 'r') as file:
     next_line = file.readline()
     while next_line:
@@ -9,7 +15,3 @@ with open('olympic athletes.tsv', 'r') as file:
         name_athlete = split_line[1]
         sport_athlete = split_line[-3]
         event_line = split_line[-2]
-
-
-
-
