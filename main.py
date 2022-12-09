@@ -1,5 +1,6 @@
 import sys
 
+
 def count_medals(medals_list, year_ol):
     gold = 0
     silver = 0
@@ -12,10 +13,8 @@ def count_medals(medals_list, year_ol):
         elif medal == 'Bronze':
             bronze += 1
 
-
     print(f'in {year_ol}, the country won {gold} gold, '
           f'{silver} silver and {bronze} bronze medals')
-
 
 
 def if_medal(filename, country, year):
@@ -28,25 +27,17 @@ def if_medal(filename, country, year):
         next_line = file.readline()
         while next_line:
             split_line = next_line.split('\t')
-            noc_line = split_line[7]
-            year_line = split_line[9]
             medal_line = split_line[-1][:-1]
             name_athlete = split_line[1]
             sport_athlete = split_line[-3]
 
-            if country in split_line:
-                if year in split_line:
-                    while counter < 10:
-                        if name_athlete not in names and medal_line != 'NA':
-                            print(f'{counter + 1}. {name_athlete} - {sport_athlete} - {medal_line}')
-                            counter += 1
-                            names.append(name_athlete)
-
-                        else:
-                            break
-
-                    medals.append(medal_line)
-
+            if country in split_line and year in split_line:
+                if counter < 10:
+                    if name_athlete not in names and medal_line != 'NA':
+                        print(f'{counter + 1}. {name_athlete} - {sport_athlete} - {medal_line}')
+                        counter += 1
+                        names.append(name_athlete)
+                medals.append(medal_line)
             next_line = file.readline()
 
         if len(names) == 0:
@@ -61,11 +52,12 @@ def if_medal(filename, country, year):
 
 file_name = sys.argv[1]
 command = sys.argv[2]
-country = sys.argv[3]
-year = sys.argv[-1]
+country_c = sys.argv[3]
+year_c = sys.argv[-1]
 
-if command == "-medal":
-    if_medal(file_name, country, year)
+if command == "-medals":
+    if_medal(file_name, country_c, year_c)
+
 
 
 
