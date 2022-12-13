@@ -1,5 +1,5 @@
-#import sys
 import argparse
+import pycountry
 parser = argparse.ArgumentParser(description='commands you may use')
 parser.add_argument('--filename', '-f', required=True)
 parser.add_argument('--medals', '-m', action='store_true', required=False)
@@ -89,6 +89,9 @@ def if_total(filename, year):
         for key, value in dict_countries.items():  # iterating items
             print(f'{key}: {value[0]} gold - {value[1]} silver - {value[2]} bronze')
 
+
+if len(args.country) > 3:
+    args.country = pycountry.countries.get(name=args.country).alpha_3
 
 if args.medals:
     if_medal(args.filename, args.country, args.year)
