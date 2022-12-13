@@ -8,6 +8,7 @@ parser.add_argument('--overall', '-o', action='store_true', required=False)
 parser.add_argument('--country', '-c', required=False)
 parser.add_argument('--year', '-y', required=False)
 parser.add_argument('--interactive', '-i', required=False)
+parser.add_argument('--output', '-out', required=False)
 
 args = parser.parse_args()
 
@@ -28,7 +29,7 @@ def count_medals(medals_list, year_ol):
           f'{silver} silver and {bronze} bronze medals')
 
 
-def if_medal(filename, country, year):
+def if_medal(filename, country, year, file_output):
     counter = 0
     names = []
     medals = []
@@ -45,6 +46,9 @@ def if_medal(filename, country, year):
             if country in split_line and year in split_line:
                 if counter < 10:
                     if name_athlete not in names and medal_line != 'NA':
+                        if file_output is not None:
+                            with open(file_output, 'a') as file_o:
+                                file_o.write(f'{counter + 1}. {name_athlete} - {sport_athlete} - {medal_line}\n')
                         print(f'{counter + 1}. {name_athlete} - {sport_athlete} - {medal_line}')
                         counter += 1
                         names.append(name_athlete)
@@ -122,7 +126,7 @@ if len(args.country) > 3:
     args.country = pycountry.countries.get(name=args.country).alpha_3
 
 if args.medals:
-    if_medal(args.filename, args.country, args.year)
+    if_medal(args.filename, args.country, args.year, args.output)
 elif args.total:
     if_total(args.filename, args.year)
 elif args.overall:
