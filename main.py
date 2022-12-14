@@ -122,6 +122,46 @@ def if_overall(filename, country):
     return max_value, max_key, min_value, min_key
 
 
+def average(filename, country):
+    dict_countries = {}
+    with open(filename, 'r') as file:
+        file.readline()
+        next_line = file.readline()
+        while next_line:
+            split_line = next_line.split('\t')
+            medal_line = split_line[-1][:-1]
+            noc_line = split_line[7]
+            year_line = split_line[9]
+
+            if noc_line not in dict_countries:
+                dict_countries[noc_line] = {}
+            if year_line not in dict_countries[noc_line]:
+                dict_countries[noc_line][year_line] = [0, 0, 0]
+
+            if medal_line == 'Gold':
+                dict_countries[noc_line][year_line][0] += 1
+            elif medal_line == 'Silver':
+                dict_countries[noc_line][year_line][1] += 1
+            elif medal_line == 'Bronze':
+                dict_countries[noc_line][year_line][2] += 1
+
+            next_line = file.readline()
+
+    total_golds = 0
+    total_silvers = 0
+    total_bronzes = 0
+    for year in dict_countries[country]:
+        total_golds += int(dict_countries[country][year][0])
+        total_silvers += int(dict_countries[country][year][1])
+        total_bronzes += int(dict_countries[country][year][2])
+
+    average_golds = int(total_golds / len(dict_countries[country]))
+    average_silvers = int(total_silvers / len(dict_countries[country]))
+    average_bronzes = int(total_bronzes / len(dict_countries[country]))
+
+    print(f'* average medals: gold - {average_golds}, silver - {average_silvers}, bronze - {average_bronzes}')
+
+
 if args.medals:
     if len(args.country) > 3:
         args.country = pycountry.countries.get(name=args.country).alpha_3
