@@ -9,6 +9,7 @@ parser.add_argument('--country', '-c', required=False)
 parser.add_argument('--year', '-y', required=False)
 parser.add_argument('--interactive', '-i', required=False)
 parser.add_argument('--output', '-out', required=False)
+parser.add_argument('--interactive', '-i', action='store_true', required=False)
 
 args = parser.parse_args()
 
@@ -162,6 +163,44 @@ def average(filename, country):
     print(f'* average medals: gold - {average_golds}, silver - {average_silvers}, bronze - {average_bronzes}')
 
 
+def if_interactive(filename):
+    while True:
+        country = input('enter a country name: ')
+        if country == '/stop':
+            print('end of program')
+            quit()
+        else:
+            if len(country) > 3:
+                country = pycountry.countries.get(name=country).alpha_3
+            else:
+                pass
+            dict_countries = {}
+            with open(filename, 'r') as file:
+                file.readline()
+                next_line = file.readline()
+                while next_line:
+                    split_line = next_line.split('\t')
+                    noc_line = split_line[7]
+                    year_line = split_line[9]
+                    place_line = split_line[-4]
+
+                    if noc_line not in dict_countries:
+                        dict_countries[noc_line] = {}
+
+                    if year_line not in dict_countries[noc_line]:
+                        dict_countries[noc_line][year_line] = place_line
+
+                    next_line = file.readline()
+
+            first_year = min(dict_countries[country])
+            print(f'* first participated in {first_year} in {dict_countries[country][first_year]}')
+            min_max = if_overall(filename, country)
+            print(f'* the best olympiad was in {min_max[1]} - country won {min_max[0]} medals')
+            print(f'* the worst olympiad was in {min_max[3]} - country won {min_max[2]} medals')
+            average(filename, country)
+            print('\t')
+
+
 if args.medals:
     if len(args.country) > 3:
         args.country = pycountry.countries.get(name=args.country).alpha_3
@@ -175,6 +214,9 @@ elif args.overall:
     max_meds = maximum[0]
     year_max = maximum[1]
     print(f'{args.country}: the best year was {year_max} - country won {max_meds} medals')
+
+elif args.interactive:
+    if_interactive(args.filename)
 
 
 
