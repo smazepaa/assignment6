@@ -122,14 +122,15 @@ def if_overall(filename, country):
     return max_value, max_key, min_value, min_key
 
 
-if len(args.country) > 3:
-    args.country = pycountry.countries.get(name=args.country).alpha_3
-
 if args.medals:
+    if len(args.country) > 3:
+        args.country = pycountry.countries.get(name=args.country).alpha_3
     if_medal(args.filename, args.country, args.year, args.output)
 elif args.total:
     if_total(args.filename, args.year)
 elif args.overall:
+    if len(args.country) > 3:
+        args.country = pycountry.countries.get(name=args.country).alpha_3
     maximum = if_overall("olympic_athletes.tsv", args.country)
     max_meds = maximum[0]
     year_max = maximum[1]
