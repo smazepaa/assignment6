@@ -5,7 +5,7 @@ parser.add_argument('--filename', '-f', required=True)
 parser.add_argument('--medals', '-m', action='store_true', required=False)
 parser.add_argument('--total', '-t', action='store_true', required=False)
 parser.add_argument('--overall', '-o', action='store_true', required=False)
-parser.add_argument('--country', '-c', required=False)
+parser.add_argument('--country', '-c', nargs='+', required=False)
 parser.add_argument('--year', '-y', required=False)
 parser.add_argument('--interactive', '-i', action='store_true', required=False)
 parser.add_argument('--output', '-out', required=False)
@@ -172,8 +172,7 @@ def if_interactive(filename):
         else:
             if len(country) > 3:
                 country = pycountry.countries.get(name=country).alpha_3
-            else:
-                pass
+
             dict_countries = {}
             with open(filename, 'r') as file:
                 file.readline()
@@ -202,18 +201,20 @@ def if_interactive(filename):
 
 
 if args.medals:
-    if len(args.country) > 3:
-        args.country = pycountry.countries.get(name=args.country).alpha_3
-    if_medal(args.filename, args.country, args.year, args.output)
+    if len(args.country[0]) > 3:
+        args.country[0] = pycountry.countries.get(name=args.country[0]).alpha_3
+    if_medal(args.filename, args.country[0], args.year, args.output)
+
 elif args.total:
     if_total(args.filename, args.year)
 elif args.overall:
-    if len(args.country) > 3:
-        args.country = pycountry.countries.get(name=args.country).alpha_3
-    maximum = if_overall(args.filename, args.country)
-    max_meds = maximum[0]
-    year_max = maximum[1]
-    print(f'{args.country}: the best year was {year_max} - country won {max_meds} medals')
+    for a in args.country:
+        if len(a) > 3:
+            a = pycountry.countries.get(name=a).alpha_3
+        maximum = if_overall(args.filename, a)
+        max_meds = maximum[0]
+        year_max = maximum[1]
+        print(f'{a}: the best year was {year_max} - country won {max_meds} medals')
 
 elif args.interactive:
     if_interactive(args.filename)
